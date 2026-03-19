@@ -46,7 +46,6 @@ form label {
     padding-right: 15px;
 }
 
-/* Reset the margins on your inputs so the grid handles the spacing */
 form input[type="text"], 
 form input[type="email"], 
 form input[type="password"] {
@@ -54,7 +53,6 @@ form input[type="password"] {
     width: 100%;
 }
 
-/* Make the login/register button stretch across the bottom, or sit neatly under the inputs */
 form button {
     grid-column: 2; /* Puts the button perfectly aligned under the input boxes */
     width: 120px;

@@ -30,3 +30,33 @@ body {
     margin-top: 50px;
     box-shadow: 0 4px 8px rgba(0,0,0,0.2);
 }
+
+/* --- Form Alignment Fix --- */
+form {
+    display: grid;
+    grid-template-columns: 100px 1fr; /* 100px for labels, remaining space for inputs */
+    gap: 15px; /* Space between rows */
+    align-items: center; /* Vertically centers the text with the boxes */
+    max-width: 400px;
+}
+
+form label {
+    font-weight: 600;
+    text-align: right; /* Aligns the label text neatly next to the input */
+    padding-right: 15px;
+}
+
+/* Reset the margins on your inputs so the grid handles the spacing */
+form input[type="text"], 
+form input[type="email"], 
+form input[type="password"] {
+    margin: 0; 
+    width: 100%;
+}
+
+/* Make the login/register button stretch across the bottom, or sit neatly under the inputs */
+form button {
+    grid-column: 2; /* Puts the button perfectly aligned under the input boxes */
+    width: 120px;
+    margin-top: 10px;
+}

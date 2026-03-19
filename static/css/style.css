@@ -1,0 +1,32 @@
+/* static/css/style.css */
+
+body {
+    /* Set the background image */
+    background-image: url('../images/library-bg.jpg');
+    
+    /* Make the image cover the entire screen without stretching */
+    background-size: cover;
+    
+    /* Keep the image fixed in place when scrolling */
+    background-attachment: fixed;
+    
+    /* Center the image */
+    background-position: center;
+    
+    /* Fallback color if the image takes a second to load */
+    background-color: #2c3e50; 
+    
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+/* PRO-TIP: Add a semi-transparent dark overlay to your main content containers 
+   so your text is still easy to read against the busy background image! */
+.container {
+    background-color: rgba(255, 255, 255, 0.9); /* White with 90% opacity */
+    border-radius: 10px;
+    padding: 30px;
+    margin-top: 50px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}

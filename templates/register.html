@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>Register New Account</h2>
+<form method="POST" action="{{ url_for('register') }}">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+    
+    <label>First Name: <input type="text" name="first_name" required></label><br><br>
+    <label>Last Name: <input type="text" name="last_name" required></label><br><br>
+    <label>Email: <input type="email" name="email" required></label><br><br>
+    <label>Password: <input type="password" name="password" required></label><br><br>
+    
+    <button type="submit">Register</button>
+</form>
+{% endblock %}

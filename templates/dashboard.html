@@ -1,0 +1,110 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>Library Dashboard</h2>
+
+{% if current_user.role == 'Librarian' %}
+    <div style="border: 2px solid #333; padding: 15px; margin-bottom: 20px; background-color: #f9f9f9;">
+        <h3>Admin Controls</h3>
+        
+        <h4>Add a New Book</h4>
+        <form method="POST" action="/add_book" style="margin-bottom: 15px;">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+            <input type="text" name="title" placeholder="Book Title" required>
+            <input type="text" name="category" placeholder="Category" required>
+            <button type="submit">Add Book</button>
+        </form>
+
+        <h4>Pending Borrow Requests</h4>
+        <ul>
+        {% for req, user_email, book_title in admin_requests %}
+            <li>
+                <strong>{{ user_email }}</strong> wants to borrow <em>{{ book_title }}</em>
+                <form method="POST" action="/approve/{{ req.id }}" style="display:inline;">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                    <button type="submit" style="color: green;">Approve</button>
+                </form>
+                <form method="POST" action="/reject/{{ req.id }}" style="display:inline;">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                    <button type="submit" style="color: red;">Reject</button>
+                </form>
+            </li>
+        {% else %}
+            <li>No pending requests.</li>
+        {% endfor %}
+        </ul>
+    </div>
+{% endif %}
+
+{% if current_user.role == 'User' %}
+    <div style="border: 1px solid #ccc; padding: 10px; margin-bottom: 20px;">
+        <h3>My Borrow Requests</h3>
+        <ul>
+        {% for req, book_title in my_requests %}
+            <li>
+                <em>{{ book_title }}</em> - Status: <strong>{{ req.status }}</strong>
+                
+                {% if req.status == 'Approved' %}
+                    <form method="POST" action="/return_book/{{ req.id }}" style="display:inline; margin-left: 10px;">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                        <button type="submit" style="color: blue;">Return Book</button>
+                    </form>
+                {% endif %}
+            </li>
+        {% else %}
+            <li>You haven't requested any books yet.</li>
+        {% endfor %}
+        </ul>
+    </div>
+{% endif %}
+
+<h3>Library Catalog</h3>
+
+<form method="GET" action="/dashboard" style="margin-bottom: 15px;">
+    <input type="text" name="q" placeholder="Search by title or category..." value="{{ search_query }}">
+    <button type="submit">Search</button>
+    <a href="/dashboard"><button type="button">Clear</button></a>
+</form>
+
+<ul>
+{% for book in books %}
+    <li>
+        {% if edit_id and edit_id|int == book.id and current_user.role == 'Librarian' %}
+            <form method="POST" action="/edit_book/{{ book.id }}" style="display:inline;">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                <input type="text" name="title" value="{{ book.title }}" required>
+                <input type="text" name="category" value="{{ book.category }}" required>
+                <button type="submit" style="color: green;">Save</button>
+                <a href="/dashboard"><button type="button">Cancel</button></a>
+            </form>
+            
+        {% else %}
+            <strong>{{ book.title }}</strong> ({{ book.category }})
+            
+            {% if current_user.role == 'User' %}
+                {% if book.is_available %}
+                    <form method="POST" action="/borrow/{{ book.id }}" style="display:inline;">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                        <button type="submit">Request to Borrow</button>
+                    </form>
+                {% else %}
+                    <span style="color: gray; font-style: italic; margin-left: 10px;">(Checked Out)</span>
+                {% endif %}
+            {% endif %}
+            
+            {% if current_user.role == 'Librarian' %}
+            <a href="/dashboard?edit_id={{ book.id }}"><button type="button" style="color: blue;">Edit</button></a>
+            
+            <form method="POST" action="/delete_book/{{ book.id }}" style="display:inline;">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                <button type="submit" style="color: red;">Delete</button>
+            </form>
+            {% endif %}
+            
+        {% endif %}
+    </li>
+{% else %}
+    <li>No books found.</li>
+{% endfor %}
+</ul>
+{% endblock %}
